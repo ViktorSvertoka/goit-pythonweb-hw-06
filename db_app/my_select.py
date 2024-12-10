@@ -4,7 +4,7 @@ from models import Student, Grade, Subject, Group, Teacher
 
 # Database connection
 engine = create_engine(
-    "postgresql+psycopg2://postgres:qwerty123@postgres_db:5432/postgres"
+    "postgresql+psycopg2://postgres:qwerty123@localhost:5432/postgres"
 )
 Session = sessionmaker(bind=engine)
 
