@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 # Database connection
 engine = create_engine(
-    "postgresql+psycopg2://postgres:qwerty123@postgres_db:5432/postgres"
+    "postgresql+psycopg2://postgres:qwerty123@localhost:5432/postgres"
 )
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
