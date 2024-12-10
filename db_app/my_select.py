@@ -3,7 +3,9 @@ from sqlalchemy import create_engine, func, desc
 from models import Student, Grade, Subject, Group, Teacher
 
 # Database connection
-engine = create_engine("postgresql+psycopg2://postgres:yourpassword@localhost/yourdb")
+engine = create_engine(
+    "postgresql+psycopg2://postgres:qwerty123@postgres_db:5432/postgres"
+)
 Session = sessionmaker(bind=engine)
 
 
