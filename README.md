@@ -131,3 +131,29 @@ py main.py -a create -m Group -n 'AD-101'
 >
 > Перегляньте Інструкцію щодо завантаження робочого файлу з репозиторію на
 > Github
+
+### Результати виконаного завдання:
+
+#### 1 крок
+
+![Results](./assets/print_screen_01.png)
+
+#### 2 крок
+
+![Results](./assets/print_screen_02.png)
+
+#### 3 крок
+
+![Results](./assets/print_screen_03.png)
+
+#### 4 крок
+
+![Results](./assets/print_screen_04.png)
+
+#### 5 крок
+
+![Results](./assets/print_screen_05.png)
+
+#### 6 крок
+
+![Results](./assets/print_screen_06.png)
