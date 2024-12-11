@@ -1,5 +1,5 @@
 import random
-from db import session
+from db_connect import session
 from datetime import datetime, timedelta
 from faker import Faker
 from models import Group, Student, Teacher, Subject, Grade
