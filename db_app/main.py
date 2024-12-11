@@ -1,68 +1,3 @@
-import argparse
-from my_select import (
-    select_1,
-    select_2,
-    select_3,
-    select_4,
-    select_5,
-    select_6,
-    select_7,
-    select_8,
-    select_9,
-    select_10,
-)
-from models import Teacher, Student, Group, Subject
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-
-# Database connection
-engine = create_engine(
-    "postgresql+psycopg2://postgres:qwerty123@localhost:5432/postgres"
-)
-Session = sessionmaker(bind=engine)
-
-
-def create_record(model, **kwargs):
-    """Створення нового запису в моделі."""
-    with Session() as session:
-        record = model(**kwargs)
-        session.add(record)
-        session.commit()
-        print(f"Створено запис: {record}")
-
-
-def list_records(model):
-    """Отримання списку записів моделі."""
-    with Session() as session:
-        records = session.query(model).all()
-        return records
-
-
-def update_record(model, record_id, **kwargs):
-    """Оновлення запису за ID."""
-    with Session() as session:
-        record = session.query(model).get(record_id)
-        if not record:
-            print(f"Запис з ID {record_id} не знайдено.")
-            return
-        for key, value in kwargs.items():
-            setattr(record, key, value)
-        session.commit()
-        print(f"Оновлено запис: {record}")
-
-
-def remove_record(model, record_id):
-    """Видалення запису за ID."""
-    with Session() as session:
-        record = session.query(model).get(record_id)
-        if not record:
-            print(f"Запис з ID {record_id} не знайдено.")
-            return
-        session.delete(record)
-        session.commit()
-        print(f"Видалено запис з ID {record_id}.")
-
-
 def main():
     parser = argparse.ArgumentParser(description="CLI для роботи з базою даних")
     parser.add_argument(
@@ -79,7 +14,6 @@ def main():
 
     args = parser.parse_args()
 
-    # CRUD operations
     models = {
         "Teacher": Teacher,
         "Student": Student,
@@ -87,69 +21,72 @@ def main():
         "Subject": Subject,
     }
 
-    if args.action == "create" and args.model:
-        model = models.get(args.model)
-        if not model:
-            print(f"Модель {args.model} не знайдена.")
-            return
-        kwargs = {
-            k: v
-            for k, v in vars(args).items()
-            if k not in ["action", "model", "id"] and v is not None
-        }
-        create_record(model, **kwargs)
+    try:
 
-    elif args.action == "list" and args.model:
-        model = models.get(args.model)
-        if not model:
-            print(f"Модель {args.model} не знайдена.")
-            return
-        records = list_records(model)
-        for record in records:
-            print(record)
+        if args.action == "create" and args.model:
+            model = models.get(args.model)
+            if not model:
+                print(f"Модель {args.model} не знайдена.")
+                return
+            kwargs = {
+                k: v
+                for k, v in vars(args).items()
+                if k not in ["action", "model", "id"] and v is not None
+            }
+            create_record(model, **kwargs)
 
-    elif args.action == "update" and args.model and args.id:
-        model = models.get(args.model)
-        if not model:
-            print(f"Модель {args.model} не знайдена.")
-            return
-        kwargs = {
-            k: v
-            for k, v in vars(args).items()
-            if k not in ["action", "model", "id"] and v is not None
-        }
-        update_record(model, args.id, **kwargs)
+        elif args.action == "list" and args.model:
+            model = models.get(args.model)
+            if not model:
+                print(f"Модель {args.model} не знайдена.")
+                return
+            records = list_records(model)
+            for record in records:
+                print(record)
 
-    elif args.action == "remove" and args.model and args.id:
-        model = models.get(args.model)
-        if not model:
-            print(f"Модель {args.model} не знайдена.")
-            return
-        remove_record(model, args.id)
+        elif args.action == "update" and args.model and args.id:
+            model = models.get(args.model)
+            if not model:
+                print(f"Модель {args.model} не знайдена.")
+                return
+            kwargs = {
+                k: v
+                for k, v in vars(args).items()
+                if k not in ["action", "model", "id"] and v is not None
+            }
+            update_record(model, args.id, **kwargs)
 
-    # SELECT queries
-    elif args.action == "select_1":
-        print(select_1())
-    elif args.action == "select_2":
-        print(select_2(args.subject_id))
-    elif args.action == "select_3":
-        print(select_3(args.subject_id))
-    elif args.action == "select_4":
-        print(select_4())
-    elif args.action == "select_5":
-        print(select_5(args.teacher_id))
-    elif args.action == "select_6":
-        print(select_6(args.group_id))
-    elif args.action == "select_7":
-        print(select_7(args.group_id, args.subject_id))
-    elif args.action == "select_8":
-        print(select_8(args.teacher_id))
-    elif args.action == "select_9":
-        print(select_9(args.student_id))
-    elif args.action == "select_10":
-        print(select_10(args.student_id, args.teacher_id))
-    else:
-        print("Невідома команда або недостатньо параметрів.")
+        elif args.action == "remove" and args.model and args.id:
+            model = models.get(args.model)
+            if not model:
+                print(f"Модель {args.model} не знайдена.")
+                return
+            remove_record(model, args.id)
+
+        elif args.action == "select_1":
+            print(select_1())
+        elif args.action == "select_2" and args.subject_id:
+            print(select_2(args.subject_id))
+        elif args.action == "select_3" and args.subject_id:
+            print(select_3(args.subject_id))
+        elif args.action == "select_4":
+            print(select_4())
+        elif args.action == "select_5" and args.teacher_id:
+            print(select_5(args.teacher_id))
+        elif args.action == "select_6" and args.group_id:
+            print(select_6(args.group_id))
+        elif args.action == "select_7" and args.group_id and args.subject_id:
+            print(select_7(args.group_id, args.subject_id))
+        elif args.action == "select_8" and args.teacher_id:
+            print(select_8(args.teacher_id))
+        elif args.action == "select_9" and args.student_id:
+            print(select_9(args.student_id))
+        elif args.action == "select_10" and args.student_id and args.teacher_id:
+            print(select_10(args.student_id, args.teacher_id))
+        else:
+            print("Невідома команда або недостатньо параметрів.")
+    except Exception as e:
+        print(f"Сталася помилка: {e}")
 
 
 if __name__ == "__main__":
