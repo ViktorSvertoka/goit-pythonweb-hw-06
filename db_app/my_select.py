@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, func, desc
 from models import Student, Grade, Subject, Group, Teacher
 from colorama import Fore, Style
 
-# Database connection
+
 engine = create_engine(
     "postgresql+psycopg2://postgres:qwerty123@localhost:5432/postgres"
 )
@@ -15,8 +15,8 @@ def select_1():
     with Session() as session:
         students = (
             session.query(Student.name, func.avg(Grade.value).label("avg_grade"))
-            .join(Grade)
-            .group_by(Student.id)
+            .join(Grade, Grade.student_id == Student.id)
+            .group_by(Student.id, Student.name)
             .order_by(desc("avg_grade"))
             .limit(5)
             .all()
@@ -29,9 +29,9 @@ def select_2(subject_id):
     with Session() as session:
         student = (
             session.query(Student.name, func.avg(Grade.value).label("avg_grade"))
-            .join(Grade)
+            .join(Grade, Grade.student_id == Student.id)
             .filter(Grade.subject_id == subject_id)
-            .group_by(Student.id)
+            .group_by(Student.id, Student.name)
             .order_by(desc("avg_grade"))
             .first()
         )
@@ -43,11 +43,10 @@ def select_3(subject_id):
     with Session() as session:
         groups_avg = (
             session.query(Group.name, func.avg(Grade.value).label("avg_grade"))
-            .select_from(Group)
             .join(Student, Student.group_id == Group.id)
             .join(Grade, Grade.student_id == Student.id)
             .filter(Grade.subject_id == subject_id)
-            .group_by(Group.id)
+            .group_by(Group.id, Group.name)
             .all()
         )
         return (
@@ -85,7 +84,7 @@ def select_7(group_id, subject_id):
     with Session() as session:
         grades = (
             session.query(Student.name, Grade.value)
-            .join(Grade)
+            .join(Grade, Grade.student_id == Student.id)
             .filter(Student.group_id == group_id, Grade.subject_id == subject_id)
             .all()
         )
@@ -101,7 +100,7 @@ def select_8(teacher_id):
     with Session() as session:
         avg_grade = (
             session.query(func.avg(Grade.value).label("avg_grade"))
-            .join(Subject)
+            .join(Subject, Subject.id == Grade.subject_id)
             .filter(Subject.teacher_id == teacher_id)
             .scalar()
         )
@@ -115,7 +114,7 @@ def select_9(student_id):
     with Session() as session:
         courses = (
             session.query(Subject.name)
-            .join(Grade)
+            .join(Grade, Grade.subject_id == Subject.id)
             .filter(Grade.student_id == student_id)
             .distinct()
             .all()
@@ -128,7 +127,7 @@ def select_10(student_id, teacher_id):
     with Session() as session:
         courses = (
             session.query(Subject.name)
-            .join(Grade)
+            .join(Grade, Grade.subject_id == Subject.id)
             .filter(Grade.student_id == student_id, Subject.teacher_id == teacher_id)
             .distinct()
             .all()
@@ -140,7 +139,6 @@ def select_10(student_id, teacher_id):
         )
 
 
-# Демо використання функцій (заміни yourparam на потрібні значення):
 if __name__ == "__main__":
     print(Fore.GREEN + "Топ 5 студентів із найбільшим середнім балом:")
     print(select_1())
